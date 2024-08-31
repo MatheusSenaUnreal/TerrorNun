@@ -67,7 +67,7 @@ private:
 	void LookRight(float Value);
 	void DropItem();
 	void CrouchPressed()	;
-	void Hidden();
+	/*void Hidden();*/
 public:
 	UFUNCTION(BlueprintCallable)
 	void RestartCurrentLevel();

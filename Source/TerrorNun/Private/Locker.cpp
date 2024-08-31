@@ -68,6 +68,8 @@ void ALocker::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 void ALocker::InteractIdle(AMainChar* Character)
 {
 	OpenLocker(Character);
+	UE_LOG(LogTemp, Warning, TEXT("su"));
+
 }
 
 void ALocker::OpenLocker(AMainChar* Char)
@@ -75,44 +77,42 @@ void ALocker::OpenLocker(AMainChar* Char)
 	Ch = Char;
 
 		PC = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-		if (PC)
 		{
-			if (Char->bIsHidden == true)
+			if (Char->bIsHidden)
 			{
 				Char->SetActorHiddenInGame(false);
 				Char->SetActorEnableCollision(true);
+				Char->EnableInput(PC);
 				PC->SetIgnoreLookInput(false);
 				PC->SetViewTargetWithBlend(Char, 0.8f, EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
 				UE_LOG(LogTemp, Warning, TEXT("saiu"));
-
 			}
 			else
 			{
 				ANunCharacterAI* NunChar = Cast<ANunCharacterAI>(UGameplayStatics::GetActorOfClass(GetWorld(), ANunCharacterAI::StaticClass()));
-
 				if (NunChar)
 				{
 					ANunAIController* NunC = Cast<ANunAIController>(NunChar->GetController());
 					if (NunC)
 					{
+						Char->EnableInput(PC);
 						NunC->SetHiddenForAI();
 						Char->bIsHidden = true;
+						Char->SetActorHiddenInGame(true);
+						Char->SetActorEnableCollision(false);
+						PC->SetIgnoreLookInput(true);
+						PC->SetViewTargetWithBlend(this, 0.8f, EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
+						Char->bIsHidden = true;
+						UE_LOG(LogTemp, Warning, TEXT("entrou"));
+						PC->Possess(Char);  // Repossess the character
+
 					}
 				}
-				Char->SetActorHiddenInGame(true);
-				Char->SetActorEnableCollision(false);
-				Char->SetActorLocation(PlayerLocationWhenExit->GetComponentLocation());
-				PC->SetIgnoreLookInput(true);
-				PC->SetViewTargetWithBlend(this, 0.8f, EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
-				Char->bIsHidden = true;
-
-				UE_LOG(LogTemp, Warning, TEXT("entrou"));
-
-				/*FTimerHandle Timer;
-				GetWorld()->GetTimerManager().SetTimer(Timer, this, &ALocker::SetInputDisable, 1.f, false);*/
 			}
 		}
-	}
+}
+			
+		
 
 
 

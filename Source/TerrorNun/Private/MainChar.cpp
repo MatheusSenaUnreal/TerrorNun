@@ -105,7 +105,6 @@ void AMainChar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainChar::InteractActor);
 	PlayerInputComponent->BindAction("Drop", IE_Pressed, this, &AMainChar::DropItem);
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMainChar::CrouchPressed);
-	PlayerInputComponent->BindAction("Hidden", IE_Pressed, this, &AMainChar::Hidden);
 
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMainChar::MoveForward);
@@ -119,7 +118,7 @@ void AMainChar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AMainChar::InteractActor()
 {
 	FVector Start = Camera->GetComponentLocation();
-	FVector End = Start + (Camera->GetComponentRotation().Vector() * 1000.f);
+	FVector End = Start + (Camera->GetComponentRotation().Vector() * 200.f);
 	FHitResult Res;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
@@ -128,7 +127,7 @@ void AMainChar::InteractActor()
 
 	if (bHit)
 	{
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red, true, 2.f, 0, 3.f);
+		//DrawDebugLine(GetWorld(), Start, End, FColor::Red, true, 2.f, 0, 3.f);
 
 		if (IInteractInterface* Interface = Cast<IInteractInterface>(Res.GetActor()))
 		{
@@ -211,29 +210,29 @@ void AMainChar::CrouchPressed()
 		Crouch();
 	}
 }
-
-void AMainChar::Hidden()
-{
-	// Array para armazenar os atores sobrepostos
-	TArray<AActor*> OverlappingActors;
-
-	// Pega todos os atores que estão sobrepostos com a cápsula
-	GetCapsuleComponent()->GetOverlappingActors(OverlappingActors);
-
-	// Loop para iterar sobre cada ator sobreposto
-	for (AActor* Actor : OverlappingActors)
-	{
-		// Verifica se o ator implementa a interface desejada
-
-
-		if (IInteractInterface* Interface = Cast<IInteractInterface>(Actor))
-		{
-			Interface->InteractIdle(this);
-		}
-
-
-	}
-}
+//
+//void AMainChar::Hidden()
+//{
+//	// Array para armazenar os atores sobrepostos
+//	TArray<AActor*> OverlappingActors;
+//
+//	// Pega todos os atores que estão sobrepostos com a cápsula
+//	GetCapsuleComponent()->GetOverlappingActors(OverlappingActors);
+//
+//	// Loop para iterar sobre cada ator sobreposto
+//	for (AActor* Actor : OverlappingActors)
+//	{
+//		// Verifica se o ator implementa a interface desejada
+//
+//
+//		if (IInteractInterface* Interface = Cast<IInteractInterface>(Actor))
+//		{
+//			Interface->InteractIdle(this);
+//		}
+//
+//
+//	}
+//}
 
 
 void AMainChar::RestartCurrentLevel()
